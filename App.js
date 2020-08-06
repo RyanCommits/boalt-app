@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     tintColor: 'white',
-    marginRight: -15,
   },
   videoContainer: {
     alignItems: 'center',
