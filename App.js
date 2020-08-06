@@ -20,6 +20,7 @@ const VIDEO_URL =
 
 const App = () => {
   const [fullscreen, setFullscreen] = useState(false);
+  const [videoPause, setVideoPause] = useState(false);
 
   GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_STARTED, () => {
     GoogleCast.castMedia({
@@ -30,14 +31,12 @@ const App = () => {
       subtitle:
         'A large and lovable rabbit deals with three tiny bullies, led by a flying squirrel, who are determined to squelch his happiness.',
       studio: 'Blender Foundation',
-      streamDuration: 596, // seconds
-      contentType: 'video/mp4', // Optional, default is "video/mp4"
-      playPosition: 10, // seconds
-      customData: {
-        // Optional, your custom object that will be passed to as customData to reciever
-        customKey: 'customValue',
-      },
     });
+    setVideoPause(true);
+  });
+
+  GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_ENDED, () => {
+    setVideoPause(false);
   });
 
   const enterFullscreen = () => {
@@ -72,6 +71,7 @@ const App = () => {
               onEnterFullscreen={enterFullscreen}
               onExitFullscreen={exitFullscreen}
               toggleResizeModeOnFullscreen={false}
+              paused={videoPause}
             />
           </View>
           <View style={styles.castContainer}>
