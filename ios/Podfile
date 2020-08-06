@@ -10,6 +10,8 @@ target 'boalt' do
 
   pod 'react-native-google-cast', :path => '../node_modules/react-native-google-cast'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'boaltTests' do
     inherit! :complete
     # Pods for testing
