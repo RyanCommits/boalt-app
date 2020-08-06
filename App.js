@@ -6,19 +6,21 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
 
 import {SvgXml} from 'react-native-svg';
 
 import BoaltLogo from './shared/BoaltLogoWhite.svg';
 import GoogleCast, {CastButton} from 'react-native-google-cast';
-import Video from 'react-native-video';
+import VideoPlayer from 'react-native-video-controls';
 
 const VIDEO_URL =
   'https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/mp4/BigBuckBunny.mp4';
 
 const App = () => {
+  const [fullscreen, setFullscreen] = useState(false);
+
   GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_STARTED, () => {
     GoogleCast.castMedia({
       mediaUrl: VIDEO_URL,
@@ -38,23 +40,38 @@ const App = () => {
     });
   });
 
+  const enterFullscreen = () => {
+    setFullscreen(true);
+  };
+
+  const exitFullscreen = () => {
+    setFullscreen(false);
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <SvgXml width="200" height="100" xml={BoaltLogo} />
-        </View>
+        {!fullscreen && (
+          <View style={styles.header}>
+            <SvgXml width="200" height="100" xml={BoaltLogo} />
+          </View>
+        )}
         <View style={styles.content}>
           <View
-            style={{
-              alignItems: 'center',
-            }}>
-            <Video
+            style={
+              fullscreen
+                ? styles.videoContainerFullscreen
+                : styles.videoContainer
+            }>
+            <VideoPlayer
               source={{
                 uri: VIDEO_URL,
               }}
               style={styles.video}
+              onEnterFullscreen={enterFullscreen}
+              onExitFullscreen={exitFullscreen}
+              toggleResizeModeOnFullscreen={false}
             />
           </View>
           <View style={styles.castContainer}>
@@ -85,8 +102,24 @@ const styles = StyleSheet.create({
     tintColor: 'white',
     marginRight: -15,
   },
+  videoContainer: {
+    alignItems: 'center',
+    flex: 1,
+    maxHeight: 300,
+    width: '100%',
+    paddingHorizontal: 25,
+  },
+  videoContainerFullscreen: {
+    position: 'absolute',
+    zIndex: 5000,
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'yellow',
+  },
   video: {
-    width: 350,
+    width: '100%',
     height: 200,
   },
   castContainer: {
