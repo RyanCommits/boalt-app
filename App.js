@@ -9,18 +9,19 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-import Svg, {Use, Image, SvgUri, SvgXml} from 'react-native-svg';
+import {SvgXml} from 'react-native-svg';
 
 import BoaltLogo from './shared/BoaltLogoWhite.svg';
 import GoogleCast, {CastButton} from 'react-native-google-cast';
+import Video from 'react-native-video';
+
+const VIDEO_URL =
+  'https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/mp4/BigBuckBunny.mp4';
 
 const App = () => {
   GoogleCast.EventEmitter.addListener(GoogleCast.SESSION_STARTED, () => {
     GoogleCast.castMedia({
-      mediaUrl:
-        'https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/mp4/BigBuckBunny.mp4',
+      mediaUrl: VIDEO_URL,
       imageUrl:
         'https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/images/480x270/BigBuckBunny.jpg',
       title: 'Big Buck Bunny',
@@ -40,12 +41,26 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <SvgXml width="200" height="100" xml={BoaltLogo} />
         </View>
         <View style={styles.content}>
-          <CastButton style={styles.castButton} />
+          <View
+            style={{
+              alignItems: 'center',
+            }}>
+            <Video
+              source={{
+                uri: VIDEO_URL,
+              }}
+              style={styles.video}
+            />
+          </View>
+          <View style={styles.castContainer}>
+            <Text style={styles.castText}>Google Cast: </Text>
+            <CastButton style={styles.castButton} />
+          </View>
         </View>
       </SafeAreaView>
     </>
@@ -53,13 +68,15 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    alignItems: 'center',
+  container: {
+    flex: 1,
     backgroundColor: 'rgba(0, 0, 0, .7)',
   },
+  header: {
+    alignItems: 'center',
+  },
   content: {
-    backgroundColor: 'red',
-    flexGrow: 1,
+    flex: 1,
     alignItems: 'center',
   },
   castButton: {
@@ -68,22 +85,18 @@ const styles = StyleSheet.create({
     tintColor: 'white',
     marginRight: -15,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
+  video: {
+    width: 350,
+    height: 200,
   },
-  highlight: {
-    fontWeight: '700',
+  castContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+  castText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 
